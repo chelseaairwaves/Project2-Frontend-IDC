@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Film</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        /* Styling Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 220px;
+            height: 100vh;
+            background-color: #1f2937;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar a {
+            font-size: 0.9rem;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #b74b4b;
+            color: white;
+        }
+
+        /* Agar konten tidak tertumpuk navbar */
+        .content {
+            margin-left: 240px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 180px;
+            }
+            .content {
+                margin-left: 200px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-blue-100 to-indigo-200 flex">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="index.html">🏠 Home</a>
+        <a href="ListMovie.html">🎬 List Movie</a>
+        <a href="#" class="active">➕ Add Movie</a>
+        <a href="Watching.html">📺 Watching</a>
+        <a href="Favorite.html">💗 Favorite</a>
+    </div>
+
+    <!-- Konten Form -->
+    <div class="content w-full">
+        <div class="container max-w-lg">
+            <h1 class="text-center text-3xl font-bold mb-6 text-gray-900 drop-shadow-lg">🎬 Tambah Film Baru</h1>
+
+            <!-- Form Tambah Film -->
+            <div class="card p-6 shadow-lg rounded-lg bg-white border border-gray-200 hover:shadow-xl transition">
+                <h3 class="text-lg font-semibold mb-3 text-gray-800">Masukkan Data Film</h3>
+                <input type="text" id="title" class="form-control mb-3" placeholder="🎬 Judul Film">
+                <input type="text" id="director" class="form-control mb-3" placeholder="🎥 Sutradara">
+                <input type="number" id="year" class="form-control mb-3" placeholder="📅 Tahun Rilis">
+                <input type="text" id="genre" class="form-control mb-3" placeholder="📽️ Genre">
+                <input type="number" id="rating" class="form-control mb-3" placeholder="⭐ Rating (0-10)">
+                <button onclick="addMovie()" class="btn btn-primary w-full">Tambah Film</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addMovie() {
+            const title = document.getElementById("title").value.trim();
+            const director = document.getElementById("director").value.trim();
+            const year = document.getElementById("year").value.trim();
+            const genre = document.getElementById("genre").value.trim();
+            const rating = document.getElementById("rating").value.trim();
+
+            if (!title || !director || !year || !genre || !rating) {
+                alert("⚠️ Harap isi semua kolom!");
+                return;
+            }
+
+            const newMovie = { title, director, year, genre, rating };
+
+            // Simpan ke localStorage
+            let movies = JSON.parse(localStorage.getItem("movies")) || [];
+            movies.push(newMovie);
+            localStorage.setItem("movies", JSON.stringify(movies));
+
+            // Beri tanda untuk update ListMovie.html
+            localStorage.setItem("updateList", "true");
+
+            alert("✅ Film berhasil ditambahkan!");
+
+            // Kosongkan form
+            document.getElementById("title").value = "";
+            document.getElementById("director").value = "";
+            document.getElementById("year").value = "";
+            document.getElementById("genre").value = "";
+            document.getElementById("rating").value = "";
+
+            // Redirect ke halaman List Movie
+            window.location.href = "ListMovie.html";
+        }
+    </script>
+
+</body>
+</html>

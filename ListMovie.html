@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Film</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        /* Styling Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 220px;
+            height: 100vh;
+            background-color: #1f2937;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar a {
+            font-size: 0.9rem;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #b74b4b;
+            color: white;
+        }
+
+        /* Agar konten tidak tertumpuk sidebar */
+        .content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 180px;
+            }
+            .content {
+                margin-left: 200px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-blue-100 to-indigo-200 flex">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="index.html">🏠 Home</a>
+        <a href="#" class="active">🎬 List Movie</a>
+        <a href="AddMovie.html">➕ Add Movie</a>
+        <a href="Watching.html">📺 Watching</a>
+        <a href="Favorite.html">💗 Favorite</a>
+    </div>
+
+    <!-- Konten Utama -->
+    <div class="content w-full">
+        <h3 class="text-3xl font-bold text-center mb-8 text-gray-900 drop-shadow-lg">🎬 Daftar Film</h3>
+        <div id="movies-list" class="grid md:grid-cols-3 gap-8"></div>
+
+        <!-- Tombol Undo -->
+        <div class="text-center mt-6">
+            <button id="undo-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 hidden">🔄 Undo Delete</button>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = "https://api-listfilm.vercel.app/movies";
+        let deletedMovie = null; // Menyimpan film terakhir yang dihapus
+        let deletedMovieElement = null; // Menyimpan elemen film yang dihapus
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetchMovies();
+        });
+
+        function fetchMovies() {
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Data Film:", data);
+                    const moviesList = document.getElementById("movies-list");
+                    moviesList.innerHTML = "";
+
+                    if (!Array.isArray(data)) {
+                        console.error("Data dari API tidak berupa array:", data);
+                        return;
+                    }
+
+                    data.forEach((movie, index) => {
+                        const movieItem = document.createElement("div");
+                        movieItem.classList.add(
+                            "bg-white", "p-5", "shadow-2xl", "rounded-2xl", "hover:shadow-3xl", 
+                            "transition", "transform", "hover:scale-105", "border", "border-gray-300"
+                        );
+
+                        movieItem.innerHTML = `
+                            <h5 class="text-xl font-bold text-gray-900 drop-shadow-md">${movie.title} (${movie.year})</h5>
+                            <p class="text-gray-700 mt-3">🎬 <span class="font-semibold">Sutradara:</span> ${movie.director}</p>
+                            <p class="text-gray-700">📽️ <span class="font-semibold">Genre:</span> ${movie.genre}</p>
+                            <p class="text-yellow-500 font-bold">⭐ Rating: ${movie.rating}</p>
+                            <button onclick="deleteMovie(${index}, this)" 
+                                class="bg-red-500 text-white px-3 py-1 mt-3 rounded-lg shadow-md hover:bg-red-600">
+                                ❌ Delete
+                            </button>
+                        `;
+
+                        moviesList.appendChild(movieItem);
+                    });
+                })
+                .catch(error => console.error("Gagal mengambil data:", error));
+        }
+
+        function deleteMovie(index, button) {
+            const movieItem = button.parentElement;
+
+            // Simpan data film yang dihapus
+            deletedMovie = {
+                title: movieItem.querySelector("h5").innerText,
+                director: movieItem.querySelectorAll("p")[0].innerText,
+                genre: movieItem.querySelectorAll("p")[1].innerText,
+                rating: movieItem.querySelectorAll("p")[2].innerText
+            };
+
+            // Simpan elemen yang dihapus
+            deletedMovieElement = movieItem.cloneNode(true);
+
+            // Hapus elemen dari DOM
+            movieItem.remove();
+
+            // Tampilkan tombol Undo
+            const undoBtn = document.getElementById("undo-btn");
+            undoBtn.classList.remove("hidden");
+
+            // Sembunyikan tombol Undo setelah 10 detik
+            setTimeout(() => {
+                undoBtn.classList.add("hidden");
+                deletedMovie = null;
+                deletedMovieElement = null;
+            }, 10000);
+        }
+
+        function undoDelete() {
+            if (deletedMovie && deletedMovieElement) {
+                const moviesList = document.getElementById("movies-list");
+                
+                // Tambahkan kembali elemen yang dihapus
+                moviesList.appendChild(deletedMovieElement);
+
+                // Sembunyikan tombol Undo setelah digunakan
+                document.getElementById("undo-btn").classList.add("hidden");
+                deletedMovie = null;
+                deletedMovieElement = null;
+            }
+        }
+
+        // Event listener untuk tombol Undo
+        document.getElementById("undo-btn").addEventListener("click", undoDelete);
+    </script>
+</body>
+</html>
