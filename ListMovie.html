@@ -7,10 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <style>
-        /* Styling Sidebar */
+
         .sidebar {
             position: fixed;
-            left: 0;
+            left: -220px;
             top: 0;
             width: 220px;
             height: 100vh;
@@ -19,6 +19,15 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            transition: left 0.3s ease-in-out;  
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
         }
 
         .sidebar a {
@@ -29,32 +38,149 @@
             border-radius: 5px;
             transition: 0.3s ease;
         }
-
-        .sidebar a:hover,
-        .sidebar a.active {
-            background-color: #b74b4b;
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #4ba1b7;
             color: white;
         }
 
-        /* Agar konten tidak tertumpuk sidebar */
-        .content {
-            margin-left: 240px;
-            padding: 20px;
+        .menu-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: #4ba1b7;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: background 0.3s ease;
         }
 
-        /* Responsif */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 180px;
+        .menu-btn:hover {
+            background: #3691a5;
+        }
+
+
+        .content {
+            margin-left: 0px;
+            padding: 20px;
+            background-color:  #1f2937; 
+            color: white; 
+            border-radius: 10px;
+            box-shadow: 0 0 15px #4ba1b7;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        .content.shift {
+            margin-left: 220px;
+        }
+
+        @media (max-width: 1440px) {
+            .menu-btn {
+                display: block;
+                background-color: #4ba1b7;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-size: 1rem;
+                text-align: center;
+                cursor: pointer;
+                margin-bottom: 15px; 
             }
+
+            .sidebar {
+                left: -220px;
+                padding-top: 60px;
+                transition: left 0.3s ease-in-out;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .sidebar a {
+                display: block;
+                font-size: 0.9rem;
+                padding: 10px 15px;
+                margin-top: 5px; 
+            }
+
             .content {
-                margin-left: 200px;
+                transition: margin-left 0.3s ease-in-out;
+            }
+
+            .content.shift {
+                margin-left: 220px;
+            }
+
+            .content.shift #movies-list {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -220px;
+                padding-top: 60px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .content {
+                margin-left: 0px;
+            }
+
+            .content.shift #movies-list {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+            }
+
+            .sidebar a {
+                display: block;
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+
+            .menu-btn {
+                display: block; 
+            }
+
+            .content {
+                margin-top: 0px;
+                margin-left: 0;
+                padding-top: 80px; 
+            }
+
+            .content #movies-list {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+        }
+
     </style>
 </head>
 <body class="bg-gradient-to-r from-blue-100 to-indigo-200 flex">
 
+    <!-- Tombol Menu -->
+    <button class="menu-btn" onclick="toggleSidebar()">☰ Menu</button>
+    
     <!-- Sidebar -->
     <div class="sidebar">
         <a href="index.html">🏠 Home</a>
@@ -64,9 +190,9 @@
         <a href="Favorite.html">💗 Favorite</a>
     </div>
 
-    <!-- Konten Utama -->
+    <!-- Konten -->
     <div class="content w-full">
-        <h3 class="text-3xl font-bold text-center mb-8 text-gray-900 drop-shadow-lg">🎬 Daftar Film</h3>
+        <h3 class="text-3xl font-bold text-center mb-8 text-white-900 drop-shadow-lg">🎬 Daftar Film</h3>
         <div id="movies-list" class="grid md:grid-cols-3 gap-8"></div>
 
         <!-- Tombol Undo -->
@@ -74,11 +200,17 @@
             <button id="undo-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 hidden">🔄 Undo Delete</button>
         </div>
     </div>
-    
+
     <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const content = document.querySelector('.content');
+            sidebar.classList.toggle('active');
+            content.classList.toggle('shift');
+        }
+
         const API_URL = "https://api-listfilm.vercel.app/movies";
-        let deletedMovie = null; // Menyimpan film terakhir yang dihapus
-        let deletedMovieElement = null; // Menyimpan elemen film yang dihapus
+        let deletedMovie = null;
 
         document.addEventListener("DOMContentLoaded", function () {
             fetchMovies();
@@ -87,85 +219,120 @@
         function fetchMovies() {
             fetch(API_URL)
                 .then(response => response.json())
-                .then(data => {
-                    console.log("Data Film:", data);
-                    const moviesList = document.getElementById("movies-list");
-                    moviesList.innerHTML = "";
-
-                    if (!Array.isArray(data)) {
-                        console.error("Data dari API tidak berupa array:", data);
-                        return;
-                    }
-
-                    data.forEach((movie, index) => {
-                        const movieItem = document.createElement("div");
-                        movieItem.classList.add(
-                            "bg-white", "p-5", "shadow-2xl", "rounded-2xl", "hover:shadow-3xl", 
-                            "transition", "transform", "hover:scale-105", "border", "border-gray-300"
-                        );
-
-                        movieItem.innerHTML = `
-                            <h5 class="text-xl font-bold text-gray-900 drop-shadow-md">${movie.title} (${movie.year})</h5>
-                            <p class="text-gray-700 mt-3">🎬 <span class="font-semibold">Sutradara:</span> ${movie.director}</p>
-                            <p class="text-gray-700">📽️ <span class="font-semibold">Genre:</span> ${movie.genre}</p>
-                            <p class="text-yellow-500 font-bold">⭐ Rating: ${movie.rating}</p>
-                            <button onclick="deleteMovie(${index}, this)" 
-                                class="bg-red-500 text-white px-3 py-1 mt-3 rounded-lg shadow-md hover:bg-red-600">
-                                ❌ Delete
-                            </button>
-                        `;
-
-                        moviesList.appendChild(movieItem);
-                    });
+                .then(apiMovies => {
+                    const localMovies = JSON.parse(localStorage.getItem("movies")) || [];
+                    const allMovies = [...apiMovies, ...localMovies];
+                    displayMovies(allMovies);
                 })
                 .catch(error => console.error("Gagal mengambil data:", error));
         }
 
-        function deleteMovie(index, button) {
-            const movieItem = button.parentElement;
+      
+    function displayMovies(movies) {
+        const moviesList = document.getElementById("movies-list");
+        moviesList.innerHTML = "";
+        let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
-            // Simpan data film yang dihapus
-            deletedMovie = {
-                title: movieItem.querySelector("h5").innerText,
-                director: movieItem.querySelectorAll("p")[0].innerText,
-                genre: movieItem.querySelectorAll("p")[1].innerText,
-                rating: movieItem.querySelectorAll("p")[2].innerText
-            };
+        movies.forEach((movie, index) => {
+            const isFavorite = favorites.some(fav => fav.title === movie.title);
 
-            // Simpan elemen yang dihapus
-            deletedMovieElement = movieItem.cloneNode(true);
+            const movieItem = document.createElement("div");
+            movieItem.classList.add(
+                "relative", "bg-white", "p-5", "shadow-2xl", "rounded-2xl", 
+                "hover:shadow-3xl", "transition", "transform", "hover:scale-105", 
+                "border", "border-gray-300"
+            );
+            movieItem.innerHTML = `
+                <!-- Tombol Favorite -->
+                <button onclick="toggleFavorite('${movie.title}', '${movie.year}', '${movie.director}', '${movie.genre}', '${movie.rating}', this)" 
+                    class="absolute top-3 right-3 text-2xl favorite-btn" 
+                    style="color: ${isFavorite ? 'red' : 'gray'};">❤️</button>
 
-            // Hapus elemen dari DOM
-            movieItem.remove();
+                <h5 class="text-xl font-bold text-gray-900 drop-shadow-md">${movie.title} (${movie.year})</h5>
+                <p class="text-gray-700 mt-3">🎬 <span class="font-semibold">Sutradara:</span> ${movie.director}</p>
+                <p class="text-gray-700">📽️ <span class="font-semibold">Genre:</span> ${movie.genre}</p>
+                <p class="text-yellow-500 font-bold">⭐ Rating: ${movie.rating}</p>
 
-            // Tampilkan tombol Undo
-            const undoBtn = document.getElementById("undo-btn");
-            undoBtn.classList.remove("hidden");
+                <button class="btn btn-warning btn-sm mt-3" onclick="editMovie(${index})">✏️ Edit</button>
+                <button class="btn btn-danger btn-sm mt-3" onclick="deleteMovie(${index})">🗑️ Hapus</button>
+            `;
+                moviesList.appendChild(movieItem);
+            });
+        }
+        function toggleFavorite(title, year, director, genre, rating, btn) {
+        let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        let existingIndex = favorites.findIndex(movie => movie.title === title);
 
-            // Sembunyikan tombol Undo setelah 10 detik
+        if (existingIndex === -1) {
+            favorites.push({ title, year, director, genre, rating });
+            btn.style.color = "red";
+        } else {
+            favorites.splice(existingIndex, 1);
+            btn.style.color = "gray";
+        }
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+    }
+
+        function deleteMovie(index) {
+            let movies = JSON.parse(localStorage.getItem("movies")) || [];
+            deletedMovie = movies.splice(index, 1)[0];
+            localStorage.setItem("movies", JSON.stringify(movies));
+            displayMovies(movies);
+
+            // menyembunyikan tombol Undo setelah 10 detik
             setTimeout(() => {
-                undoBtn.classList.add("hidden");
-                deletedMovie = null;
-                deletedMovieElement = null;
+                if (deletedMovie) {
+                    if (confirm("Batalkan penghapusan?") ) {
+                        movies.push(deletedMovie);
+                        localStorage.setItem("movies", JSON.stringify(movies));
+                        displayMovies(movies);
+                    }
+                    deletedMovie = null;
+                }
             }, 10000);
         }
 
-        function undoDelete() {
-            if (deletedMovie && deletedMovieElement) {
-                const moviesList = document.getElementById("movies-list");
-                
-                // Tambahkan kembali elemen yang dihapus
-                moviesList.appendChild(deletedMovieElement);
-
-                // Sembunyikan tombol Undo setelah digunakan
-                document.getElementById("undo-btn").classList.add("hidden");
-                deletedMovie = null;
-                deletedMovieElement = null;
+        function editMovie(index) {
+            let movies = JSON.parse(localStorage.getItem("movies")) || [];
+            let movie = movies[index];
+            
+            let newTitle = prompt("Edit Judul Film:", movie.title);
+            let newDirector = prompt("Edit Sutradara:", movie.director);
+            let newYear = prompt("Edit Tahun Rilis:", movie.year);
+            let newGenre = prompt("Edit Genre:", movie.genre);
+            let newRating = prompt("Edit Rating:", movie.rating);
+            
+            if (newTitle && newDirector && newYear && newGenre && newRating) {
+                movies[index] = { 
+                    title: newTitle, 
+                    director: newDirector, 
+                    year: newYear, 
+                    genre: newGenre, 
+                    rating: newRating 
+                };
+                localStorage.setItem("movies", JSON.stringify(movies));
+                displayMovies(movies);
             }
         }
 
-        // Event listener untuk tombol Undo
+        function toggleFavorite(title, year, director, genre, rating, btn) {
+            let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+            let existingIndex = favorites.findIndex(movie => movie.title === title);
+
+            if (existingIndex === -1) {
+                favorites.push({ title, year, director, genre, rating });
+                btn.style.color = "red";
+            } else {
+                favorites.splice(existingIndex, 1);
+                btn.style.color = "gray";
+            }
+            localStorage.setItem("favorites", JSON.stringify(favorites));
+        }
+        
         document.getElementById("undo-btn").addEventListener("click", undoDelete);
+        
+       
     </script>
+
 </body>
 </html>

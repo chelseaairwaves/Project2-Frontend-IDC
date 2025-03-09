@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watching - Hive Movie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 220px;
+            height: 100vh;
+            background-color: #1f2937;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .sidebar a {
+            font-size: 0.9rem;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #4ba1b7;
+            color: white;
+        }
+
+        .menu-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: #4ba1b7;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            background: #3691a5;
+        }
+
+        .content {
+            margin-left: 240px;
+            padding: 20px;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .app-card {
+            background-color: #1f2937;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            height: 180px; 
+        }
+        .app-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #4ba1b7;
+        }
+        .app-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        @media (max-width: 1440px) {
+            .menu-btn {
+                display: block;
+                background-color: #4ba1b7;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-size: 1rem;
+                text-align: center;
+                cursor: pointer;
+                margin-bottom: 15px; /* Tambahkan margin lebih banyak */
+            }
+
+            .sidebar {
+                left: 0;
+                padding-top: 60px; /* Memberikan ruang agar menu turun */
+            }
+
+            .sidebar a {
+                display: block;
+                font-size: 0.9rem;
+                padding: 10px 15px;
+                margin-top: 5px; /* Memberi jarak lebih antar menu */
+            }
+
+            .content {
+                margin-left: 0px;
+            }
+
+            .sidebar.active{
+                transform: translate(-220%, 0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 0;
+                padding-top: 60px; /* Ruang ekstra untuk menu */
+            }
+
+            .content {
+                margin-left: 0px;
+            }
+            .content > h3 {
+                font-size: 1.2rem;
+
+            }
+        }
+
+        @media (max-width: 480px) {
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+            }
+
+            .sidebar a {
+                display: block;
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+
+            .menu-btn {
+                display: block; 
+            }
+
+            .content {
+                margin-top: 0px;
+                margin-left: 0;
+                padding-top: 60px; 
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-black to-gray-900 flex">
+    <!-- Tombol Menu -->
+    <button class="menu-btn" onclick="toggleSidebar()">☰ Menu</button>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="index.html">🏠 Home</a>
+        <a href="ListMovie.html">🎬 List Movie</a>
+        <a href="AddMovie.html">➕ Add Movie</a>
+        <a href="#" class="active">📺 Watching</a>
+        <a href="Favorite.html">💗 Favorite</a>
+    </div>
+    <div class="content w-full">
+        <h3 class="text-3xl font-bold text-center mb-8 text-white drop-shadow-lg">📺 Rekomendasi Aplikasi Menonton</h3>
+        <div id="watch-list" class="grid md:grid-cols-3 gap-8">
+            <a href="https://www.netflix.com" target="_blank" class="app-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Netflix_icon.svg" alt="Netflix">
+                <h4 class="text-white text-xl">Netflix</h4>
+            </a>
+            <a href="https://www.vidio.com" target="_blank" class="app-card">
+                <img src="./picture.png/video.png" alt="Vidio">
+                <h4 class="text-white text-xl">Vidio</h4>
+            </a>
+            <a href="https://www.bilibili.tv" target="_blank" class="app-card">
+                <img src="./picture.png/bstation.png" alt="Bstation">
+                <h4 class="text-white text-xl">Bstation</h4>
+            </a>
+            <a href="https://www.hotstar.com/" target="_blank" class="app-card">
+                <img src="./picture.png/disney.webp" alt="Disney">
+                <h4 class="text-white text-xl">Disney</h4>
+            </a><a href="https://www.viu.com/" target="_blank" class="app-card">
+                <img src="./picture.png/VIU.webp" alt="VIU">
+                <h4 class="text-white text-xl">VIU</h4>
+            </a>
+            <a href="https://www.youtube.com/" target="_blank" class="app-card">
+                 <img src="./picture.png/yt.png" alt="youtube">
+                <h4 class="text-white text-xl">youtube</h4>
+             </a>
+            <a href="https://www.visionplus.id/" target="_blank" class="app-card">
+                <img src="./picture.png/vision+.png" alt="vision+">
+                 <h4 class="text-white text-xl">Vision+</h4>
+            </a>
+            <a href="https://wetv.vip/" target="_blank" class="app-card">
+                <img src="./picture.png/we tv.webp" alt="vision">
+                 <h4 class="text-white text-xl">We TV</h4>
+            </a>
+            <a href="https://www.iq.com/" target="_blank" class="app-card">
+                <img src="./picture.png/iqiyi.png" alt="vision">
+                 <h4 class="text-white text-xl">We TV</h4>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const content = document.querySelector('.content');
+            sidebar.classList.toggle('active');
+            content.classList.toggle('shift');
+        }
+    </script>
+</body>
+</html>

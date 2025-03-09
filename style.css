@@ -14,13 +14,19 @@ html{
     font-size: 62.5%;
 }
 
-body{
+body {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; 
+    padding-top: -1000px; 
     overflow-x: hidden;
     background-color: black;
     color: white;
 }
+
 
 header{
     margin-top: 5px;
@@ -36,9 +42,10 @@ header{
     z-index: 100;
 }
 
+
 .logo{
     font-size: 3rem;
-    color: #b74b4b;
+    color: #4ba1b7;
     font-weight: 800;
     cursor: pointer;
     transition: 0.5s ease;
@@ -59,8 +66,8 @@ nav a{
 
 nav a:hover,
 nav a.active{
-    color: #b74b4b;
-    border-bottom: 3px solid #b74b4b;
+    color: #4ba1b7;
+    border-bottom: 3px solid #4ba1b7;
 }
 
 @media(max-width:995px){
@@ -70,8 +77,8 @@ nav a.active{
         top: 0;
         right: 0;
         width: 40%;
-        border-left: 3px solid #b74b4b;
-        border-bottom: 3px solid #b74b4b;
+        border-left: 3px solid #4ba1b7;
+        border-bottom: 3px solid #4ba1b7;
         border-bottom-left-radius: 2rem;
         padding: 1rem solid;
         background-color: #161616;
@@ -107,16 +114,19 @@ section{
     align-items: center;
     gap: 10rem;
     background-color: rgb(0, 0, 0);
+    margin-top: -50px; 
+
 }
 
 .home .home-content h1{
     font-size: 6rem;
     font-weight: 700;
     line-height: 1.3;
+    
 }
 
 span{
-    color: #b74b4b;
+    color: #4ba1b7;
 }
 
 .home-content h3{
@@ -136,7 +146,7 @@ span{
 .home-img img{
     position: relative;
     width: 28vw;
-    box-shadow: 0 0 25px solid #b74b4b;
+    box-shadow: 0 0 25px solid #4ba1b7;
     cursor: pointer;
     background-color: transparent;
     border: 0.2rem solid #1d1b1b;
@@ -144,10 +154,10 @@ span{
     border-radius: 50%;
     margin: 3rem 1.5rem 3rem 0;
     transition: 0.3s ease;
-    color: #b74b4b;
+    color: #4ba1b7;
     background-color: black;
     font-size: 1.6rem;
-    color: #b74b4b;
+    color: #4ba1b7;
     letter-spacing: 0.3rem;
     font-weight: 600;
     transition: 0.3s ease;
@@ -158,9 +168,9 @@ span{
 
 .home-img img:hover{
     transform: scale3d(1.03);
-    background-color: #b74b4b;
+    background-color: #4ba1b7;
     color: black;
-    box-shadow: 0 0 100px #b74b4b;
+    box-shadow: 0 0 100px #4ba1b7;
     
 }
 
@@ -171,19 +181,19 @@ span{
     width: 4rem;
     height: 4rem;
     background-color: transparent;
-    border: 0.2rem solid #b74b4b;
+    border: 0.2rem solid #4ba1b7;
     font-size: 2rem;
     border-radius: 50%;
     margin: 3rem 1.5rem 3rem 0;
     transition: 0.3s ease;
-    color: #b74b4b;
+    color: #4ba1b7;
 }
 
 .social-icons a:hover{
     color: black;
     transform: scale(1.3) translateY(-5px);
-    background-color: #b74b4b;
-    box-shadow: 0  0 25px #b74b4b;
+    background-color: #4ba1b7;
+    box-shadow: 0  0 25px #4ba1b7;
 }
 
 .btn{
@@ -192,19 +202,19 @@ span{
     background-color: black;
     border-radius: 4rem;
     font-size: 1.6rem;
-    color: #b74b4b;
+    color: #4ba1b7;
     letter-spacing: 0.3rem;
     font-weight: 600;
-    border: 2px solid #b74b4b;
+    border: 2px solid #4ba1b7;
     transition: 0.3s ease;
     cursor: pointer;
 }
 
 .btn:hover{
     transform: scale3d(1.03);
-    background-color: #b74b4b;
+    background-color: #4ba1b7;
     color: black;
-    box-shadow: 0 0 25px #b74b4b;
+    box-shadow: 0 0 25px #4ba1b7;
 }
 
 .typing-text{
@@ -219,7 +229,7 @@ span{
 
 .typing-text span::before{
     content: "SITUS INTERNET";
-    color: #b74b4b;
+    color: #4ba1b7;
     animation: words 20s infinite;
 }
 
@@ -236,7 +246,7 @@ span{
 
 @keyframes cursor{
     to{
-        border-left: 3px solid #b74b4b;
+        border-left: 3px solid #4ba1b7;
     }
 }
 
@@ -249,13 +259,13 @@ span{
     }
 }
 
-@media (max-width: 1000px){
+@media (max-width: 1024px){
     .home{
         gap: 4rem;
     }
 }
 
-@media(max-width:995px){
+@media(max-width:768px){
     .home{
         flex-direction: column;
     }
@@ -272,61 +282,7 @@ span{
         width: 70vw;
         margin-top: 4rem;
     }
-}
 
-/* Tambahkan gaya untuk menu hamburger */
-.hamburger {
-    display: none;
-    font-size: 3rem;
-    cursor: pointer;
-    color: white;
-    z-index: 200;
-}
-
-header nav.menu {
-    display: flex;
-    gap: 3rem;
-}
-
-header nav.menu a {
-    font-size: 1.8rem;
-}
-
-/* Responsif untuk perangkat kecil */
-@media (max-width: 995px) {
-    .hamburger {
-        display: block;
-    }
-
-    nav.menu {
-        display: none;
-        top: 0;
-        right: -100%;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 2rem;
-        width: 30rem;
-        height: 150vh;
-        background: black;
-        padding: 2rem;
-        transition: right 0.3s ease;
-        z-index: 150;
-        border-left: 2px solid #b74b4b;
-    }
-
-    nav.menu.active {
-        right: 0;
-    }
-
-    nav.menu a {
-        color: white;
-        font-size: 2rem;
-    }
-
-    nav.menu a:hover,
-    nav.menu a.active {
-        color: #b74b4b;
-    }
 }
 
 
